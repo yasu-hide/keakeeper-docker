@@ -1,0 +1,57 @@
+version: '3.8'
+services:
+    keaphpfpm:
+        build:
+            context: ./keakeeper
+            target: keaphpfpm
+        environment:
+            TZ: Asia/Tokyo
+        depends_on: [ keadhcp4, keadhcp6 ]
+        volumes: [ kea-config:/etc/kea ]
+    keadhcp4:
+        build:
+            context: ./keadhcpd
+        environment:
+            TZ: Asia/Tokyo
+        command: [ "/usr/sbin/kea-dhcp4", "-c", "/etc/kea/kea-dhcp4.conf" ]
+        tty: true
+        depends_on: [ mariadb ]
+        volumes: [ kea-config:/etc/kea ]
+    keadhcp6:
+        build:
+            context: ./keadhcpd
+        environment:
+            TZ: Asia/Tokyo
+        command: [ "/usr/sbin/kea-dhcp6", "-c", "/etc/kea/kea-dhcp6.conf" ]
+        tty: true
+        depends_on: [ mariadb ]
+        volumes: [ kea-config:/etc/kea ]
+    keactrlagent:
+        build:
+            context: ./keadhcpd
+        environment:
+            TZ: Asia/Tokyo
+        command: [ "/usr/sbin/kea-ctrl-agent", "-c", "/etc/kea/kea-ctrl-agent.conf" ]
+        tty: true
+        depends_on: [ mariadb ]
+        volumes: [ kea-config:/etc/kea ]
+    keahttpd:
+        build:
+            context: ./keakeeper
+            target: keahttpd
+        environment:
+            TZ: Asia/Tokyo
+        depends_on: [ keaphpfpm ]
+        ports:
+            - 10080:80
+    mariadb:
+        build:
+            context: ./mariadb
+        environment:
+            TZ: Asia/Tokyo
+        volumes: [ kea-data:/var/lib/mysql ]
+networks:
+    default:
+volumes:
+    kea-config:
+    kea-data:

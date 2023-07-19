@@ -12,7 +12,7 @@ RUN apk add --update --no-cache tzdata
 COPY --from=builder /var/www/keakeeper /var/www/keakeeper
 COPY default.conf /etc/nginx/conf.d/
 
-FROM php:8.1.0beta2-fpm-alpine3.14 as keaphpfpm
+FROM php:8.1.10RC1-fpm-alpine3.16 as keaphpfpm
 RUN apk add --update --no-cache tzdata gettext \
     && apk add --update --no-cache --virtual .build-deps oniguruma-dev openssl-dev gettext-dev \
     && docker-php-ext-install pdo_mysql mysqli mbstring gettext \

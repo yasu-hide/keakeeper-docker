@@ -1,4 +1,4 @@
-FROM alpine:3.16
+FROM alpine:3.21.2
 WORKDIR /tmp
 RUN apk add --update --no-cache tzdata mariadb mariadb-server-utils mariadb-client openrc \
     && sed -ri '275s/cgroup_add_service/#cgroup_add_service/' /lib/rc/sh/openrc-run.sh \
